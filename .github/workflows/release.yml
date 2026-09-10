@@ -1,0 +1,104 @@
+# Builds installers for every supported platform.
+#
+# Tauri cannot cross-compile: a Windows bundle needs the MSVC toolchain and the
+# WebView2 SDK, and a macOS bundle needs Xcode's codesign/hdiutil. So each
+# platform is built on its own runner rather than from one machine.
+
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version tag for the draft release, e.g. v0.1.0"
+        required: true
+        default: "v0.0.0-dev"
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Apple silicon and Intel get a DMG each rather than one universal
+          # binary: a universal build has to happen on a single runner and
+          # doubles its size, and two downloads are cheaper than that.
+          - platform: macos-latest
+            target: aarch64-apple-darwin
+            name: macos-arm64
+          - platform: macos-latest
+            target: x86_64-apple-darwin
+            name: macos-x64
+          - platform: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+            name: linux-x64
+          - platform: windows-latest
+            target: x86_64-pc-windows-msvc
+            name: windows-x64
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Linux build dependencies
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libgtk-3-dev \
+            libsoup-3.0-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            rpm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
+          key: ${{ matrix.target }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Fails the build on a type error before spending minutes on the Rust
+      # side, and runs the recurrence / parsing / path-safety tests.
+      - run: npx tsc --noEmit
+      - run: cargo test --manifest-path src-tauri/Cargo.toml
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # linuxdeploy ships its own binutils, which is older than the
+          # `.relr.dyn` sections modern distros emit and aborts the AppImage on
+          # them. Distro libraries arrive stripped anyway, so skipping the step
+          # costs nothing. Ignored on macOS and Windows.
+          NO_STRIP: true
+        with:
+          args: --target ${{ matrix.target }}
+          tagName: ${{ github.event.inputs.version || github.ref_name }}
+          releaseName: "Tack ${{ github.event.inputs.version || github.ref_name }}"
+          releaseDraft: true
+          prerelease: false
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tack-${{ matrix.name }}
+          path: |
+            src-tauri/target/${{ matrix.target }}/release/bundle/**/*.dmg
+            src-tauri/target/${{ matrix.target }}/release/bundle/**/*.rpm
+            src-tauri/target/${{ matrix.target }}/release/bundle/**/*.deb
+            src-tauri/target/${{ matrix.target }}/release/bundle/**/*.AppImage
+            src-tauri/target/${{ matrix.target }}/release/bundle/**/*.msi
+            src-tauri/target/${{ matrix.target }}/release/bundle/**/*-setup.exe
+          if-no-files-found: error
