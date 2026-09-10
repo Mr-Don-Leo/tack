@@ -1,0 +1,23 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Baseline capabilities for the Tack main and quick-add windows.",
+  "windows": ["main", "quickadd"],
+  "permissions": [
+    "core:default",
+    "core:app:default",
+    "core:event:default",
+    "core:window:allow-show",
+    "core:window:allow-hide",
+    "core:window:allow-close",
+    "core:window:allow-set-focus",
+    "core:window:allow-set-size",
+    "core:window:allow-center",
+    "core:window:allow-start-dragging",
+    "core:window:allow-is-visible",
+    "core:webview:allow-set-webview-focus",
+    "dialog:default",
+    "opener:default",
+    "global-shortcut:default"
+  ]
+}

@@ -1,0 +1,228 @@
+/* Skins.
+   A skin is a token override first and foremost — the handful of scoped rules
+   below are flourishes (a grid overlay, a gradient title bar) that no token can
+   express. Both skins pin their own colour scheme because neither has a
+   meaningful counterpart in the other mode. */
+
+/* Cyberpunk — always dark ----------------------------------------------- */
+
+[data-skin="cyberpunk"] {
+  color-scheme: dark;
+
+  --font-ui: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  --accent: #00f0ff;
+  --accent-hover: #5df6ff;
+  --accent-soft: rgba(0, 240, 255, 0.14);
+  --accent-ring: rgba(0, 240, 255, 0.3);
+  --text-on-accent: #04121a;
+
+  --danger: #ff2e6a;
+  --danger-soft: rgba(255, 46, 106, 0.16);
+  --success: #3dffa8;
+  --success-soft: rgba(61, 255, 168, 0.14);
+  --warning: #ffb703;
+  --warning-soft: rgba(255, 183, 3, 0.16);
+
+  --bg: #0b0714;
+  --bg-elevated: #140e22;
+  --bg-sidebar: rgba(13, 8, 24, 0.82);
+  --bg-input: #1a1230;
+  --bg-inset: #1f1638;
+  --bg-hover: rgba(0, 240, 255, 0.08);
+  --bg-active: rgba(0, 240, 255, 0.14);
+  --bg-scrim: rgba(4, 2, 10, 0.66);
+
+  --text: #ecdfff;
+  --text-secondary: #9d8cc4;
+  --text-tertiary: #6c5d90;
+
+  --border: rgba(0, 240, 255, 0.16);
+  --border-strong: rgba(0, 240, 255, 0.3);
+
+  --shadow-card: 0 0 0 1px rgba(0, 240, 255, 0.1), 0 0 24px rgba(0, 240, 255, 0.07);
+  --shadow-raised: 0 0 0 1px rgba(0, 240, 255, 0.22), 0 0 28px rgba(0, 240, 255, 0.16);
+  --shadow-modal: 0 0 0 1px rgba(0, 240, 255, 0.24), 0 0 48px rgba(255, 46, 196, 0.16);
+  --shadow-chip: 0 0 0 1px rgba(0, 240, 255, 0.12);
+
+  --priority-1: #6c5d90;
+  --priority-2: #00f0ff;
+  --priority-3: #ffb703;
+  --priority-4: #ff2ec4;
+
+  --terminal-bg: #0b0714;
+}
+
+/* Faint grid, drawn behind everything and never intercepting clicks. */
+[data-skin="cyberpunk"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0, 240, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.045) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+/* Only the app shell needs lifting above the grid. The overlays are already
+   `position: fixed` at a far higher z-index, and re-declaring `position` here
+   would drop them out of the viewport entirely. */
+[data-skin="cyberpunk"] .app {
+  position: relative;
+  z-index: 1;
+}
+
+[data-skin="cyberpunk"] h1,
+[data-skin="cyberpunk"] .sidebar-title,
+[data-skin="cyberpunk"] .sidebar-section-title,
+[data-skin="cyberpunk"] .topbar-title h1 {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+[data-skin="cyberpunk"] .btn-primary {
+  box-shadow: 0 0 18px rgba(0, 240, 255, 0.35);
+}
+
+[data-skin="cyberpunk"] .nav-item.is-selected,
+[data-skin="cyberpunk"] .dropdown-item[aria-selected="true"] {
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+[data-skin="cyberpunk"] .sidebar-mark {
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.5);
+}
+
+/* Windows XP (Luna) — always light -------------------------------------- */
+
+[data-skin="xp"] {
+  color-scheme: light;
+
+  --font-ui: "Tahoma", "Segoe UI", "DejaVu Sans", Verdana, sans-serif;
+  --text-size: 13px;
+
+  --radius-sm: 4px;
+  --radius-md: 4px;
+  --radius-lg: 5px;
+  --radius-pill: 4px;
+
+  --accent: #2456c9;
+  --accent-hover: #1b47ac;
+  --accent-soft: rgba(61, 149, 255, 0.2);
+  --accent-ring: rgba(61, 149, 255, 0.4);
+  --text-on-accent: #ffffff;
+
+  --danger: #c1272d;
+  --danger-soft: rgba(193, 39, 45, 0.14);
+  --success: #2d7d32;
+  --success-soft: rgba(45, 125, 50, 0.14);
+  --warning: #c47f00;
+  --warning-soft: rgba(196, 127, 0, 0.16);
+
+  --bg: #ece9d8;
+  --bg-elevated: #ffffff;
+  --bg-sidebar: #ece9d8;
+  --bg-input: #ffffff;
+  --bg-inset: #e3e0d1;
+  --bg-hover: rgba(61, 149, 255, 0.14);
+  --bg-active: rgba(61, 149, 255, 0.24);
+  --bg-scrim: rgba(0, 0, 0, 0.32);
+
+  --text: #1a1a1a;
+  --text-secondary: #55554d;
+  --text-tertiary: #86867c;
+
+  --border: #b8b49c;
+  --border-strong: #7f9db9;
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.16);
+  --shadow-raised: 0 2px 6px rgba(0, 0, 0, 0.24);
+  --shadow-modal: 0 6px 18px rgba(0, 0, 0, 0.34);
+  --shadow-chip: 0 1px 1px rgba(0, 0, 0, 0.12);
+
+  --priority-1: #86867c;
+  --priority-2: #2456c9;
+  --priority-3: #c47f00;
+  --priority-4: #c1272d;
+
+  --terminal-bg: #0a0a0a;
+}
+
+/* Luna's blue title chrome. */
+[data-skin="xp"] .topbar,
+[data-skin="xp"] .sidebar-header,
+[data-skin="xp"] .modal-header,
+[data-skin="xp"] .quickadd-panel {
+  background: linear-gradient(180deg, #3d95ff 0%, #2456c9 100%);
+  color: #ffffff;
+  border-bottom-color: #16367e;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+[data-skin="xp"] .topbar .btn-icon,
+[data-skin="xp"] .topbar .topbar-title h1,
+[data-skin="xp"] .sidebar-header .sidebar-title,
+[data-skin="xp"] .modal-header h2 {
+  color: #ffffff;
+}
+
+[data-skin="xp"] .topbar .btn-icon:hover {
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+}
+
+/* A blue primary button vanishes into the blue title bar, so buttons sitting on
+   Luna chrome get the raised grey treatment instead. */
+[data-skin="xp"] .topbar .btn-primary,
+[data-skin="xp"] .modal-header .btn-primary {
+  background: linear-gradient(180deg, #ffffff 0%, #ecebe4 46%, #dcd9c8 100%);
+  border-color: #16367e;
+  color: #16367e;
+  text-shadow: none;
+}
+
+[data-skin="xp"] .topbar .btn-primary:hover:not(:disabled) {
+  background: linear-gradient(180deg, #ffffff 0%, #f6f5ef 46%, #e6e3d4 100%);
+}
+
+[data-skin="xp"] .sidebar {
+  border-right-color: #b8b49c;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Beveled buttons. */
+[data-skin="xp"] .btn:not(.btn-ghost):not(.btn-icon):not(.btn-danger) {
+  background: linear-gradient(180deg, #ffffff 0%, #ecebe4 46%, #dcd9c8 100%);
+  border: 1px solid #7f9db9;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+[data-skin="xp"] .btn-primary {
+  background: linear-gradient(180deg, #5aa7ff 0%, #2f6bd6 48%, #21519f 100%);
+  border-color: #16367e;
+  color: #ffffff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+[data-skin="xp"] .btn:active:not(:disabled) {
+  transform: none;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+[data-skin="xp"] .search-box .input {
+  background: #ffffff;
+  border-color: #7f9db9;
+}
+
+[data-skin="xp"] .segmented {
+  background: #d8d5c4;
+  border: 1px solid #b8b49c;
+}

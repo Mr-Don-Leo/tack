@@ -1,0 +1,118 @@
+/* Design tokens — the single source of truth for colour, radius, type and
+   shadow. Components never hard-code a value; a new skin is a new block of
+   custom properties and nothing else. */
+
+:root {
+  /* Type */
+  --font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", system-ui,
+    "Helvetica Neue", sans-serif;
+  --font-mono: "SF Mono", ui-monospace, "JetBrains Mono", "Menlo", "Cascadia Mono", monospace;
+  --text-size: 14px;
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-pill: 999px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --fast: 120ms;
+  --medium: 180ms;
+
+  /* Layout */
+  --sidebar-width: 248px;
+  --topbar-height: 52px;
+
+  /* Light palette (Apple skin) */
+  color-scheme: light;
+  --accent: #007aff;
+  --accent-hover: #0071eb;
+  --accent-soft: rgba(0, 122, 255, 0.12);
+  --accent-ring: rgba(0, 122, 255, 0.28);
+  --on-accent: #ffffff;
+
+  --danger: #ff3b30;
+  --danger-soft: rgba(255, 59, 48, 0.12);
+  --success: #34c759;
+  --success-soft: rgba(52, 199, 89, 0.14);
+  --warning: #ff9500;
+  --warning-soft: rgba(255, 149, 0, 0.14);
+
+  --bg: #f2f2f7;
+  --bg-elevated: #ffffff;
+  --bg-sidebar: rgba(246, 246, 249, 0.72);
+  --bg-input: #ffffff;
+  --bg-inset: #ececed;
+  --bg-hover: rgba(0, 0, 0, 0.045);
+  --bg-active: rgba(0, 0, 0, 0.075);
+  --bg-scrim: rgba(0, 0, 0, 0.36);
+
+  --text: #1c1c1e;
+  --text-secondary: #6b6b70;
+  --text-tertiary: #a1a1a6;
+  --text-on-accent: #ffffff;
+
+  --border: rgba(0, 0, 0, 0.1);
+  --border-strong: rgba(0, 0, 0, 0.16);
+
+  --shadow-card: 0 0 0 0.5px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.06),
+    0 8px 24px rgba(0, 0, 0, 0.05);
+  --shadow-raised: 0 0 0 0.5px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.12),
+    0 16px 40px rgba(0, 0, 0, 0.1);
+  --shadow-modal: 0 0 0 0.5px rgba(0, 0, 0, 0.08), 0 24px 64px rgba(0, 0, 0, 0.24);
+  --shadow-chip: 0 0 0 0.5px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.12);
+
+  --terminal-bg: #1c1c1e;
+
+  /* Priority accents, shared by every skin unless overridden. */
+  --priority-1: #8e8e93;
+  --priority-2: #007aff;
+  --priority-3: #ff9500;
+  --priority-4: #ff3b30;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --accent: #0a84ff;
+  --accent-hover: #3b9bff;
+  --accent-soft: rgba(10, 132, 255, 0.18);
+  --accent-ring: rgba(10, 132, 255, 0.36);
+
+  --danger: #ff453a;
+  --danger-soft: rgba(255, 69, 58, 0.18);
+  --success: #32d74b;
+  --success-soft: rgba(50, 215, 75, 0.18);
+  --warning: #ff9f0a;
+  --warning-soft: rgba(255, 159, 10, 0.18);
+
+  --bg: #131315;
+  --bg-elevated: #1c1c1e;
+  --bg-sidebar: rgba(28, 28, 30, 0.72);
+  --bg-input: #262629;
+  --bg-inset: #2c2c2e;
+  --bg-hover: rgba(255, 255, 255, 0.06);
+  --bg-active: rgba(255, 255, 255, 0.1);
+  --bg-scrim: rgba(0, 0, 0, 0.5);
+
+  --text: #f2f2f7;
+  --text-secondary: #9d9da3;
+  --text-tertiary: #6d6d73;
+
+  --border: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.16);
+
+  --shadow-card: 0 0 0 0.5px rgba(255, 255, 255, 0.06), 0 1px 2px rgba(0, 0, 0, 0.4),
+    0 8px 24px rgba(0, 0, 0, 0.3);
+  --shadow-raised: 0 0 0 0.5px rgba(255, 255, 255, 0.08), 0 6px 16px rgba(0, 0, 0, 0.5),
+    0 16px 40px rgba(0, 0, 0, 0.4);
+  --shadow-modal: 0 0 0 0.5px rgba(255, 255, 255, 0.08), 0 24px 64px rgba(0, 0, 0, 0.6);
+  --shadow-chip: 0 0 0 0.5px rgba(255, 255, 255, 0.06), 0 1px 3px rgba(0, 0, 0, 0.4);
+
+  --terminal-bg: #0d0d0f;
+
+  --priority-1: #8e8e93;
+  --priority-2: #0a84ff;
+  --priority-3: #ff9f0a;
+  --priority-4: #ff453a;
+}

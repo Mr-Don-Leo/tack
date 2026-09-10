@@ -1,0 +1,558 @@
+/* Custom controls. Nothing here relies on a native widget: WebKitGTK, WinRT and
+   AppKit each style selects, checkboxes and date fields their own way, and none
+   of them follow the skin. Every control below is built from plain elements. */
+
+/* Buttons --------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  white-space: nowrap;
+  transition:
+    background var(--fast) var(--ease),
+    transform var(--fast) var(--ease),
+    border-color var(--fast) var(--ease);
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--bg-hover);
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.btn-primary {
+  background: var(--accent);
+  border-color: transparent;
+  color: var(--text-on-accent);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-secondary);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.btn-danger {
+  background: transparent;
+  border-color: transparent;
+  color: var(--danger);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: var(--danger-soft);
+}
+
+.btn-sm {
+  padding: 5px 10px;
+  font-size: 12.5px;
+  border-radius: 7px;
+}
+
+/* A square icon-only button, used across the top bar and card hovers. */
+.btn-icon {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-secondary);
+}
+
+.btn-icon:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+/* Fields ---------------------------------------------------------------- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: -0.1px;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 8px 11px;
+  font: inherit;
+  font-size: 13.5px;
+  color: var(--text);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition:
+    border-color var(--fast) var(--ease),
+    box-shadow var(--fast) var(--ease);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 72px;
+  line-height: 1.5;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+.input:focus,
+.textarea:focus,
+.input:focus-visible,
+.textarea:focus-visible {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-ring);
+  outline: none;
+}
+
+.input-invalid,
+.input-invalid:focus {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px var(--danger-soft);
+}
+
+/* A borderless title field that still reads as editable on hover. */
+.input-plain {
+  border-color: transparent;
+  background: transparent;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  padding: 6px 8px;
+}
+
+.input-plain:hover:not(:focus) {
+  background: var(--bg-hover);
+}
+
+/* Checkbox -------------------------------------------------------------- */
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+}
+
+.checkbox-box {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 5px;
+  border: 1.5px solid var(--border-strong);
+  background: var(--bg-input);
+  color: transparent;
+  transition:
+    background var(--fast) var(--ease),
+    border-color var(--fast) var(--ease),
+    color var(--fast) var(--ease);
+}
+
+.checkbox:hover .checkbox-box {
+  border-color: var(--accent);
+}
+
+.checkbox[aria-checked="true"] .checkbox-box {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--text-on-accent);
+}
+
+.checkbox-round .checkbox-box {
+  border-radius: var(--radius-pill);
+}
+
+.checkbox-label {
+  font-size: 13.5px;
+}
+
+.checkbox[aria-checked="true"] .checkbox-label.strike {
+  color: var(--text-tertiary);
+  text-decoration: line-through;
+}
+
+/* Switch ---------------------------------------------------------------- */
+
+.switch {
+  width: 42px;
+  height: 25px;
+  flex: none;
+  padding: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  transition: background var(--medium) var(--ease);
+}
+
+.switch[aria-checked="true"] {
+  background: var(--accent);
+  border-color: transparent;
+}
+
+.switch-knob {
+  width: 19px;
+  height: 19px;
+  border-radius: var(--radius-pill);
+  background: #ffffff;
+  box-shadow: var(--shadow-chip);
+  transition: transform var(--medium) var(--ease);
+}
+
+.switch[aria-checked="true"] .switch-knob {
+  transform: translateX(17px);
+}
+
+/* Dropdown -------------------------------------------------------------- */
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px 8px 11px;
+  font-size: 13.5px;
+  text-align: left;
+  color: var(--text);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition:
+    border-color var(--fast) var(--ease),
+    box-shadow var(--fast) var(--ease);
+}
+
+.dropdown-trigger:hover {
+  border-color: var(--border-strong);
+}
+
+.dropdown-trigger[aria-expanded="true"] {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-ring);
+}
+
+.dropdown-chevron {
+  color: #8e8e93;
+  flex: none;
+}
+
+.dropdown-panel {
+  position: absolute;
+  z-index: 60;
+  top: calc(100% + 5px);
+  left: 0;
+  min-width: 100%;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 5px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-modal);
+  animation: pop-in var(--fast) var(--ease);
+}
+
+.dropdown-panel-up {
+  top: auto;
+  bottom: calc(100% + 5px);
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 13.5px;
+  text-align: left;
+  color: var(--text);
+}
+
+.dropdown-item:hover,
+.dropdown-item.is-active {
+  background: var(--bg-hover);
+}
+
+.dropdown-item[aria-selected="true"] {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.dropdown-item-check {
+  margin-left: auto;
+  color: var(--accent);
+}
+
+.dropdown-separator {
+  height: 1px;
+  margin: 5px 8px;
+  background: var(--border);
+}
+
+.dropdown-heading {
+  padding: 8px 10px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Segmented control ----------------------------------------------------- */
+
+.segmented {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--bg-inset);
+  border-radius: 10px;
+}
+
+.segmented-item {
+  padding: 5px 13px;
+  border-radius: 7px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition:
+    background var(--fast) var(--ease),
+    color var(--fast) var(--ease);
+}
+
+.segmented-item[aria-selected="true"] {
+  background: var(--bg-elevated);
+  color: var(--text);
+  font-weight: 600;
+  box-shadow: var(--shadow-chip);
+}
+
+/* Pills and badges ------------------------------------------------------ */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 20px;
+  padding: 0 9px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: -0.05px;
+  background: var(--bg-inset);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.pill-accent {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.pill-danger {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.pill-warning {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.pill-success {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.pill-label {
+  /* Colour comes from the label itself, mixed down for the fill. */
+  background: color-mix(in srgb, var(--label-color) 16%, transparent);
+  color: var(--label-color);
+}
+
+.badge {
+  min-width: 20px;
+  height: 18px;
+  padding: 0 6px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  background: var(--bg-inset);
+  color: var(--text-secondary);
+}
+
+.badge-accent {
+  background: var(--accent);
+  color: var(--text-on-accent);
+}
+
+.badge-danger {
+  background: var(--danger);
+  color: #fff;
+}
+
+/* Menu (context / overflow) --------------------------------------------- */
+
+.menu {
+  position: fixed;
+  z-index: 200;
+  min-width: 190px;
+  padding: 5px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-modal);
+  animation: pop-in var(--fast) var(--ease);
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 13.5px;
+  text-align: left;
+}
+
+.menu-item:hover {
+  background: var(--bg-hover);
+}
+
+.menu-item-danger {
+  color: var(--danger);
+}
+
+.menu-item-danger:hover {
+  background: var(--danger-soft);
+}
+
+.menu-item-shortcut {
+  margin-left: auto;
+  font-size: 11.5px;
+  color: var(--text-tertiary);
+}
+
+/* Toasts ---------------------------------------------------------------- */
+
+.toast-stack {
+  position: fixed;
+  z-index: 400;
+  right: 18px;
+  bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 380px;
+  padding: 11px 14px;
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-raised);
+  font-size: 13.5px;
+  pointer-events: auto;
+  animation: toast-in var(--medium) var(--ease);
+}
+
+.toast-error {
+  border-color: color-mix(in srgb, var(--danger) 40%, var(--border));
+}
+
+.toast-icon {
+  flex: none;
+}
+
+.toast-error .toast-icon {
+  color: var(--danger);
+}
+
+.toast-success .toast-icon {
+  color: var(--success);
+}
+
+.toast.is-leaving {
+  animation: toast-out var(--medium) var(--ease) forwards;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes toast-out {
+  to {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
