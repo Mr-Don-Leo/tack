@@ -10,7 +10,10 @@
     "preview": "vite preview",
     "tauri": "tauri",
     "app": "tauri dev",
-    "app:build": "tauri build"
+    "app:build": "tauri build",
+    "bundle:linux": "NO_STRIP=true tauri build --bundles rpm,deb,appimage",
+    "bundle:macos": "tauri build --bundles dmg",
+    "bundle:windows": "tauri build --bundles msi,nsis"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.11.1",

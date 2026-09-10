@@ -1,5 +1,7 @@
 // Sidebar: global views, the board list, and the automations/settings links.
 
+import logoUrl from "../../assets/logo-small.png";
+
 import * as api from "../api";
 import { button, el, icon, iconButton, on, render } from "../dom";
 import type { IconName } from "../dom";
@@ -46,7 +48,7 @@ export function renderSidebar(container: HTMLElement, handlers: SidebarHandlers)
     el(
       "div",
       { class: "sidebar-header" },
-      el("span", { class: "sidebar-mark" }, icon("bolt", 13, 2.2)),
+      el("img", { class: "sidebar-mark", src: logoUrl, alt: "", width: "24", height: "24" }),
       el("span", { class: "sidebar-title", text: "Tack" }),
     ),
     el(
