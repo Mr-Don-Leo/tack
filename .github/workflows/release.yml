@@ -42,17 +42,32 @@ jobs:
           TAG: ${{ steps.meta.outputs.tag }}
         run: |
           set -euo pipefail
-          # Drafts are not returned by the "release by tag" endpoint, so the
-          # list has to be searched instead.
-          id=$(gh api "repos/$GITHUB_REPOSITORY/releases" --paginate \
-                 --jq ".[] | select(.tag_name == \"$TAG\") | .id" | head -1)
-          if [ -z "$id" ]; then
-            gh release create "$TAG" --draft --target "$GITHUB_SHA" \
-              --title "Tack $TAG" \
-              --notes "Installers for Linux, macOS and Windows are attached below."
+
+          # The id comes straight out of the create call. Creating the release
+          # and then listing releases to find it again races GitHub's
+          # read-after-write lag, and an empty id is not a loud failure:
+          # tauri-action turns it into 0, skips every upload and still exits 0.
+          if body=$(gh api --method POST "repos/$GITHUB_REPOSITORY/releases" \
+                      -f tag_name="$TAG" \
+                      -f target_commitish="$GITHUB_SHA" \
+                      -f name="Tack $TAG" \
+                      -f body="Installers for Linux, macOS and Windows are attached below." \
+                      -F draft=true 2>&1); then
+            id=$(jq -r '.id // empty' <<<"$body")
+          else
+            # Expected on a re-run, where the release already exists. Anything
+            # else is printed so it does not have to be guessed at later.
+            echo "could not create the release, falling back to a lookup:"
+            echo "$body"
             id=$(gh api "repos/$GITHUB_REPOSITORY/releases" --paginate \
-                   --jq ".[] | select(.tag_name == \"$TAG\") | .id" | head -1)
+                   --jq "[.[] | select(.tag_name == \"$TAG\")][0].id // empty")
           fi
+
+          if [ -z "$id" ]; then
+            echo "::error::could not create or find a release for $TAG"
+            exit 1
+          fi
+          echo "resolved release id $id for $TAG"
           echo "id=$id" >> "$GITHUB_OUTPUT"
 
   build:
@@ -115,6 +130,14 @@ jobs:
       - run: npx tsc --noEmit
       - run: cargo test --manifest-path src-tauri/Cargo.toml
 
+      # tauri-action treats a missing releaseId as "nothing to upload" and
+      # still succeeds, which would leave a green run and an empty release.
+      - name: Require a release to upload to
+        shell: bash
+        run: |
+          test -n "${{ needs.create-release.outputs.release_id }}" \
+            || { echo "::error::release_id is empty"; exit 1; }
+
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -145,7 +168,17 @@ jobs:
     steps:
       - env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_ID: ${{ needs.create-release.outputs.release_id }}
         run: |
-          gh api --method PATCH \
-            "repos/$GITHUB_REPOSITORY/releases/${{ needs.create-release.outputs.release_id }}" \
-            -f draft=false
+          set -euo pipefail
+
+          # Publishing a release with no installers on it is worse than leaving
+          # the draft for someone to look at.
+          count=$(gh api "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" --jq '.assets | length')
+          echo "release $RELEASE_ID has $count asset(s)"
+          if [ "$count" -eq 0 ]; then
+            echo "::error::every build succeeded but nothing was attached; leaving the release as a draft"
+            exit 1
+          fi
+
+          gh api --method PATCH "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" -F draft=false
