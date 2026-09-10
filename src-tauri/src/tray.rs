@@ -23,8 +23,13 @@ pub const OPEN_VIEW_EVENT: &str = "tack://open-view";
 /// How many tasks to list under each section before it becomes a wall of text.
 const MAX_ITEMS: usize = 8;
 
-/// Monochrome pin, tinted by the OS on macOS and drawn as-is elsewhere.
-const TRAY_ICON: &[u8] = include_bytes!("../icons/tray.png");
+/// macOS tints a *template* image to match the menu bar, so it gets a flat
+/// monochrome pin. Linux and Windows draw the icon over a panel whose colour we
+/// cannot know, where only a full-colour icon is reliably visible.
+#[cfg(target_os = "macos")]
+const TRAY_ICON: &[u8] = include_bytes!("../icons/tray-template@2x.png");
+#[cfg(not(target_os = "macos"))]
+const TRAY_ICON: &[u8] = include_bytes!("../icons/tray@2x.png");
 
 pub fn build(app: &AppHandle) -> Result<()> {
     let menu = build_menu(app)?;
