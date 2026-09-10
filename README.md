@@ -53,7 +53,7 @@ Prerequisites: [Rust](https://rustup.rs) and Node 20+.
 ```bash
 npm install
 npm run app          # development, with hot reload
-npm run app:build    # produce an installable bundle
+npm run app:build    # produce an installable bundle for the current platform
 ```
 
 ### Linux build dependencies
@@ -61,12 +61,59 @@ npm run app:build    # produce an installable bundle
 ```bash
 # Fedora
 sudo dnf install webkit2gtk4.1-devel gtk3-devel libsoup3-devel \
-                 libayatana-appindicator-gtk3-devel
+                 libayatana-appindicator-gtk3-devel librsvg2-devel
 
 # Debian / Ubuntu
 sudo apt install libwebkit2gtk-4.1-dev libgtk-3-dev libsoup-3.0-dev \
-                 libayatana-appindicator3-dev
+                 libayatana-appindicator3-dev librsvg2-dev patchelf rpm
 ```
+
+### Installers
+
+| Platform | Artifacts                          |
+| -------- | ---------------------------------- |
+| Linux    | `.rpm`, `.deb`, `.AppImage`        |
+| macOS    | `.dmg` (arm64 and x64)             |
+| Windows  | `.msi` and an NSIS `-setup.exe`    |
+
+```bash
+npm run bundle:linux     # rpm + AppImage
+npm run bundle:windows   # run on Windows
+npm run bundle:macos     # run on macOS
+```
+
+Each has to be built on its own operating system. Tauri cannot cross-compile:
+a Windows bundle needs the MSVC toolchain and the WebView2 SDK, and a macOS
+bundle needs Xcode's `codesign` and `hdiutil`. `.github/workflows/release.yml`
+builds all four targets on their own runners and attaches the results to a
+draft GitHub release — push a `v*` tag, or run the workflow manually.
+
+Neither the macOS nor the Windows bundle is code-signed here. Without a
+Developer ID certificate macOS shows a Gatekeeper warning on first launch, and
+Windows shows a SmartScreen prompt. Add `APPLE_CERTIFICATE`,
+`APPLE_SIGNING_IDENTITY` and the Windows signing secrets to the repository to
+have `tauri-action` sign them.
+
+An AppImage inherits the glibc of the machine that built it, so build it on the
+oldest distribution you intend to support — the CI job uses Ubuntu 22.04 for
+exactly this reason. `NO_STRIP=true` is set because linuxdeploy bundles a
+binutils older than the `.relr.dyn` sections current distributions emit; the
+libraries it copies in are already stripped by their own packaging, so nothing
+is lost.
+
+### Icons
+
+`assets/logo.png` is the single source. After changing it:
+
+```bash
+python3 scripts/make-icon.py     # tray icons + the small sidebar copy
+npx tauri icon assets/logo.png   # .icns, .ico and the PNG set
+```
+
+The tray is generated separately because the two platforms want opposite
+things: macOS needs a monochrome *template* the OS tints to match the menu bar,
+while Linux and Windows draw the icon over a panel whose colour is unknown, so
+they get the full-colour logo.
 
 ## Where your data lives
 
