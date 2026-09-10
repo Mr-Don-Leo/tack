@@ -47,24 +47,27 @@ jobs:
           # and then listing releases to find it again races GitHub's
           # read-after-write lag, and an empty id is not a loud failure:
           # tauri-action turns it into 0, skips every upload and still exits 0.
-          id=$(gh api --method POST "repos/$GITHUB_REPOSITORY/releases" \
-                 -f tag_name="$TAG" \
-                 -f target_commitish="$GITHUB_SHA" \
-                 -f name="Tack $TAG" \
-                 -f body="Installers for Linux, macOS and Windows are attached below." \
-                 -F draft=true \
-                 --jq .id 2>/dev/null) || id=""
-
-          # A re-run finds the release already there; only then is a lookup right.
-          if [ -z "$id" ]; then
+          if body=$(gh api --method POST "repos/$GITHUB_REPOSITORY/releases" \
+                      -f tag_name="$TAG" \
+                      -f target_commitish="$GITHUB_SHA" \
+                      -f name="Tack $TAG" \
+                      -f body="Installers for Linux, macOS and Windows are attached below." \
+                      -F draft=true 2>&1); then
+            id=$(jq -r '.id // empty' <<<"$body")
+          else
+            # Expected on a re-run, where the release already exists. Anything
+            # else is printed so it does not have to be guessed at later.
+            echo "could not create the release, falling back to a lookup:"
+            echo "$body"
             id=$(gh api "repos/$GITHUB_REPOSITORY/releases" --paginate \
                    --jq "[.[] | select(.tag_name == \"$TAG\")][0].id // empty")
           fi
 
-          if [ -z "$id" ] || [ "$id" = "null" ]; then
+          if [ -z "$id" ]; then
             echo "::error::could not create or find a release for $TAG"
             exit 1
           fi
+          echo "resolved release id $id for $TAG"
           echo "id=$id" >> "$GITHUB_OUTPUT"
 
   build:
