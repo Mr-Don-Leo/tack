@@ -1,0 +1,25 @@
+{
+  "name": "tack",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Tack — boards, tasks, reminders and automations for the desktop.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "app": "tauri dev",
+    "app:build": "tauri build"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.11.1",
+    "@tauri-apps/plugin-dialog": "^2.4.1",
+    "@tauri-apps/plugin-opener": "^2.5.1"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.11.4",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.14"
+  }
+}
